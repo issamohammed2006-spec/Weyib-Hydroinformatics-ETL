@@ -32,8 +32,8 @@ The Python pipeline (`run_pipeline.py`) performs the following:
 
 ### 2. Database Setup
 1. Open MySQL Workbench.
-2. Create the database and tables by running the script in `sql/01_schema.sql`.
-3. Insert the seed data (agencies, stations, parameters) by running `sql/02_seed_data.sql`.
+2. Open the `Hylnfo proj1.sql` file in your text editor.
+3. Copy the entire SQL script and run it in MySQL Workbench. This single script will automatically create the database, build all 6 tables, and insert the seed data (agencies, stations, parameters).
 
 ### 3. Environment Variables
 Create a file named `.env` in the root directory (do not commit this file to GitHub):
