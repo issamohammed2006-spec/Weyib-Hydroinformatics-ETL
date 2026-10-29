@@ -1,9 +1,7 @@
 # Weyib Hydroinformatics ETL Pipeline
 
 ## 📌 Project Overview
-This repository contains an automated Extract, Transform, Load (ETL) pipeline and a relational MySQL database designed for hydro-climatological data analysis in the Weyib sub-basin, Ethiopia. 
-
-The pipeline ingests multi-decadal daily data (1984–2015) for the **Alemkerem streamflow station** and four **climate stations** (Agarfa, Dinsho, Robe, and Sinana). It automatically applies Quality Control (QC) rules before loading the data into a structured MySQL database.
+The pipeline ingests multi-decadal daily data for the **Alemkerem streamflow station** and four **climate stations** (Agarfa, Dinsho, Robe, and Sinana). To overcome spatial data gaps, the pipeline also integrates **CHIRPS satellite rainfall data** via the **Google Earth Engine API**, adding over 54,000 spatial rainfall records. It automatically applies Quality Control (QC) rules and standardizes all timestamps to UTC before loading the data into a structured MySQL database.
 
 ## 🗄️ Database Schema (CLO1)
 The MySQL database consists of 6 normalized tables:
