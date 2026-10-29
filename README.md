@@ -16,7 +16,7 @@ The MySQL database consists of 6 normalized tables:
 
 ## ⚙️ ETL Pipeline (CLO2 & CLO3)
 The Python pipeline (`run_pipeline.py`) performs the following:
-1. **Extract**: Reads raw CSV files from the `data/raw/` directory.
+1. **Extract**: Reads raw CSV files from the `data/raw/` directory, and pulls CHIRPS satellite rainfall data via the Google Earth Engine API.
 2. **Transform**: 
    * Converts local timestamps to UTC.
    * Melts wide climate data into a long format.
