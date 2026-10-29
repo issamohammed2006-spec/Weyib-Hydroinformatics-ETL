@@ -21,23 +21,25 @@ VALUES (:measurement_id, :flag, :reason);
 
 def load_measurements(df: pd.DataFrame, param_map: dict):
     engine = get_engine()
-    
-    # Optional: Print how many rows we are about to insert
     print(f"Total rows to process: {len(df)}")
+    
+    inserted = 0
+    skipped = 0
     
     with engine.begin() as conn:
         for index, row in df.iterrows():
             
-            # 1. Skip rows with missing dates (MySQL cannot accept empty timestamps)
+                       # Check for missing dates
             if pd.isna(row["timestamp_utc"]):
+                skipped += 1
+                if skipped <= 5: # Only print the first 5 so it doesn't flood the screen
+                    print(f"DEBUG SKIP: Station={row['station_id']}, Raw Timestamp='{row['timestamp']}', Type={type(row['timestamp'])}")
                 continue
                 
-            # 2. Convert NaN to None (which becomes NULL in MySQL)
             val = row["value"]
             if pd.isna(val):
                 val = None
                 
-            # 3. Insert into measurement table
             conn.execute(text(UPSERT_SQL), {
                 "station_id": row["station_id"],
                 "parameter_id": param_map[row["parameter_code"]],
@@ -46,7 +48,6 @@ def load_measurements(df: pd.DataFrame, param_map: dict):
                 "source": row["source"],
             })
             
-            # 4. Get the measurement_id
             result = conn.execute(text(SELECT_ID_SQL), {
                 "station_id": row["station_id"],
                 "parameter_id": param_map[row["parameter_code"]],
@@ -54,7 +55,6 @@ def load_measurements(df: pd.DataFrame, param_map: dict):
                 "source": row["source"],
             }).fetchone()
             
-            # 5. Insert into qc_flag table
             if result:
                 m_id = result[0]
                 reason = row["qc_reason"]
@@ -66,3 +66,7 @@ def load_measurements(df: pd.DataFrame, param_map: dict):
                     "flag": row["qc_flag"],
                     "reason": reason
                 })
+            inserted += 1
+            
+    print(f"--> Successfully processed {inserted} rows.")
+    print(f"--> Skipped {skipped} rows due to missing dates.")

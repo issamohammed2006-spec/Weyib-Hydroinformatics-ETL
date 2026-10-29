@@ -2,9 +2,17 @@ import pandas as pd
 import numpy as np
 
 def standardise_time(df: pd.DataFrame) -> pd.DataFrame:
-    # Force dates to UTC and remove timezone info for MySQL DATETIME
-    # Added errors='coerce' just in case there are bad date formats
-    df["timestamp_utc"] = pd.to_datetime(df["timestamp"], utc=True, errors='coerce').dt.tz_localize(None)
+    # Force everything to string first
+    df["timestamp"] = df["timestamp"].astype(str).str.strip()
+    
+    # Use format='mixed' to handle 'YYYY-MM-DD' and 'YYYY-MM-DD HH:MM:SS' simultaneously
+    df["timestamp_utc"] = pd.to_datetime(
+        df["timestamp"], 
+        format='mixed', 
+        utc=True, 
+        errors='coerce'
+    ).dt.tz_localize(None)
+    
     return df
 
 def basic_qc(df: pd.DataFrame) -> pd.DataFrame:

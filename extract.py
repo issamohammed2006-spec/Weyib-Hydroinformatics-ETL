@@ -68,3 +68,18 @@ def extract_climate_real(csv_path: str, station_id: str) -> pd.DataFrame:
     df_long["station_id"] = station_id
     df_long["source"] = "EMI"
     return df_long[["timestamp", "value", "station_id", "parameter_code", "source"]]
+def extract_chirps_real(csv_path: str) -> pd.DataFrame:
+    print("Reading CHIRPS CSV...")
+    df = pd.read_csv(csv_path)
+    
+    # 1. Clean column names
+    df.columns = df.columns.str.strip()
+    
+    # 2. Force the timestamp to be a standard YYYY-MM-DD string
+    df['timestamp'] = df['timestamp'].astype(str).str.strip()
+    
+    # 3. Parse it and immediately format it back to a string so it perfectly 
+    # matches the format Pandas expects when it combines everything
+    df['timestamp'] = pd.to_datetime(df['timestamp'], errors='coerce').dt.strftime('%Y-%m-%d')
+    
+    return df

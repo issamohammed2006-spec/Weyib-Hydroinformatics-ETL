@@ -1,4 +1,4 @@
-from extract import extract_streamflow_real, extract_climate_real
+from extract import extract_streamflow_real, extract_climate_real, extract_chirps_real
 from transform import standardise_time, basic_qc
 from load import load_measurements
 from db import get_engine
@@ -18,8 +18,11 @@ def main():
     robe_df = extract_climate_real("data/raw/robe_climate.csv", "ROBE")
     sinana_df = extract_climate_real("data/raw/sinana_climate.csv", "SINANA")
     
-    # Combine them all into one big dataframe
-    all_data = pd.concat([q_df, agarfa_df, dinsho_df, robe_df, sinana_df], ignore_index=True)
+    print("Extracting CHIRPS Satellite Data...")
+    chirps_df = extract_chirps_real("data/raw/chirps_data.csv")
+    
+    # Combine them all (make sure this line is aligned with the print statements above)
+    all_data = pd.concat([q_df, agarfa_df, dinsho_df, robe_df, sinana_df, chirps_df], ignore_index=True)
 
     # 2. TRANSFORM
     print("Transforming data and applying QC...")
